@@ -1,5 +1,6 @@
 ---
 title: "Webdocs"
+output: github_document
 ---
     
 List of pages:

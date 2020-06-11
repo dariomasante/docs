@@ -30,10 +30,8 @@ t.test(bl, ot)
     ##  78.87997  67.04159
 
 ``` r
-boxplot(bl, ot)
+#boxplot(bl, ot)
 ```
-
-![](precip_odd_pattern_files/figure-markdown_github/unnamed-chunk-2-1.png)
 
 Yes it is :( Now view data distributions on a plot
 
@@ -57,7 +55,7 @@ One may say "yes but just like temperatures precipitation may have changed over 
     ## mean of x mean of y 
     ##  68.49633  65.49673
 
-![](precip_odd_pattern_files/figure-markdown_github/unnamed-chunk-4-1.png)![](precip_odd_pattern_files/figure-markdown_github/unnamed-chunk-4-2.png)
+![](precip_odd_pattern_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
 No hints they're different. The number of samples is decent, so they truly seem to have same average, despite shape not so much the same, but that's another problem really
 
@@ -83,4 +81,4 @@ ggplot(csv, aes(x = mth, y = precipitation_mm, fill = p)) +
 
 ![](precip_odd_pattern_files/figure-markdown_github/unnamed-chunk-5-2.png)
 
-Well, this one is quite explicit.
+Well, this one is quite explicit. Notice I tried with other points and no such difference emerges.

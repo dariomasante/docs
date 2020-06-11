@@ -29,7 +29,7 @@ Quite different averages... Is it statistically significant? (I know distributio
 
 ```{r}
 t.test(bl, ot)
-boxplot(bl, ot)
+#boxplot(bl, ot)
 ```
 
 Yes it is :( Now view data distributions on a plot
@@ -51,10 +51,12 @@ Let's double check 2010 to 2020 is equal to 1970-1980:
 ```{r, echo=FALSE}
 ot1 <- ot[1:120]
 ot2 <- ot[121:length(ot)]
-print(t.test(ot1,ot2)); boxplot(ot1,ot2)
+print(t.test(ot1,ot2)) #; boxplot(ot1,ot2)
+mm <- data.frame(m=c(mean(ot1),mean(ot2)), f=c('ot1','ot2'))
 scsv <- csv[csv$p == 'ot', ]
 scsv$sp <- c(rep('ot1', 120),rep('ot2',length(ot)-120))
-ggplot(scsv, aes(x=precipitation_mm, colour=sp)) + geom_density() 
+ggplot(scsv, aes(x=precipitation_mm, colour=sp)) + geom_density() +
+  geom_vline(data=mm, aes(xintercept=m,  colour=f),linetype="dashed", size=1)
 ```
 
 No hints they're different. The number of samples is decent, so they truly seem to have same average, despite shape not so much the same, but that's another problem really
@@ -73,5 +75,5 @@ ggplot(csv, aes(x = mth, y = precipitation_mm, fill = p)) +
   ) + labs(title='Averages of baseline (bl) months vs non-baseline months (ot)')
 ```
 
-Well, this one is quite explicit.
+Well, this one is quite explicit. Notice I tried with other points and no such difference emerges.
 

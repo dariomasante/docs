@@ -2,8 +2,7 @@
 title: "How precipitation"
 author: "dario masante"
 date: "11 June 2020"
-output:
-  html_document: default
+output: github_document
 ---
 
 ```{r setup, include=FALSE}

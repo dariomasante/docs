@@ -1,0 +1,78 @@
+---
+title: "How precipitation"
+author: "dario masante"
+date: "11 June 2020"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# Upload point in Belgium
+csv <- read.csv('D:/precipitation.csv')
+# csv <- read.csv('D:/precipitation_IE.csv') # do this for another point
+```
+
+The following picture of SPI 48, filtering out a lot of short and mid-term variability, captured my attention. It is quite suspect that the SPI is floating around normal as expected within the baseline, while out of it it gets to crazy negative values... So crazy  it's hard to believe they repeat at only 50 years distance (70ies and 20ies)
+![](D:/spi48.PNG) 
+
+So let's check if overall monthly **precipitation** averages are roughly the same between baseline (bl) period and outside (ot). I'd expect not to be very different.
+
+```{r, echo=FALSE}
+csv$p <- NA; csv$p[c(1:120,481:593)] <- 'ot'; csv$p[121:480] <- 'bl'
+bl <- csv$precipitation_mm[csv$p == 'bl']
+ot <- csv$precipitation_mm[csv$p == 'ot']
+paste('mean of precip out of baseline:', mean(ot))
+paste('mean of precip within baseline:', mean(bl))
+```
+
+Quite different averages... Is it statistically significant? (I know distributions aren't normal but it's still ok)
+
+```{r}
+t.test(bl, ot)
+boxplot(bl, ot)
+```
+
+Yes it is :( Now view data distributions on a plot
+
+```{r, echo=FALSE}
+library(ggplot2)
+mm <- data.frame(m=c(mean(ot),mean(bl)), f=c('ot','bl'))
+ggplot(csv, aes(x=precipitation_mm, colour=p)) + geom_density() +
+  geom_vline(data=mm, aes(xintercept=m,  colour=f),linetype="dashed", size=1)
+```
+
+Definitely looks they are coming from different populations, but should not!
+Coincidence? t.test suggests extremely unlilkely, they truly seem to be from different pop.
+
+One may say "yes but just like temperatures precipitation may have changed over the course of time".
+First, that'd be concerning because entails the baseline is not suited anymore. Second it's not the case, since both before and after the baseline are different.
+Let's double check 2010 to 2020 is equal to 1970-1980:
+
+```{r, echo=FALSE}
+ot1 <- ot[1:120]
+ot2 <- ot[121:length(ot)]
+print(t.test(ot1,ot2)); boxplot(ot1,ot2)
+scsv <- csv[csv$p == 'ot', ]
+scsv$sp <- c(rep('ot1', 120),rep('ot2',length(ot)-120))
+ggplot(scsv, aes(x=precipitation_mm, colour=sp)) + geom_density() 
+```
+
+No hints they're different. The number of samples is decent, so they truly seem to have same average, despite shape not so much the same, but that's another problem really
+
+### Month by month
+Let's see which months if any in particular are screwing up things
+
+```{r}
+csv$mth <- factor(month.name[rep(1:12, length.out=nrow(csv))],levels=month.name)
+ggplot(csv, aes(x = mth, y = precipitation_mm, fill = p)) + geom_boxplot()
+ggplot(csv, aes(x = mth, y = precipitation_mm, fill = p)) + 
+  stat_summary(
+    fun = mean,
+    geom = 'line',
+    aes(group = p, colour = p)
+  ) + labs(title='Averages of baseline (bl) months vs non-baseline months (ot)')
+```
+
+Well, this one is quite explicit.
+

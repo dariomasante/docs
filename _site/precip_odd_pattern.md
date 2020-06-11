@@ -1,7 +1,5 @@
 How precipitation
 ================
-dario masante
-11 June 2020
 
 The following picture of SPI 48, filtering out a lot of short and mid-term variability, captured my attention. It is quite suspect that the SPI is floating around normal as expected within the baseline, while out of it it gets to crazy negative values... So crazy it's hard to believe they repeat at only 50 years distance (70ies and 20ies) ![](D:/spi48.PNG)
 
@@ -28,10 +26,6 @@ t.test(bl, ot)
     ## sample estimates:
     ## mean of x mean of y 
     ##  78.87997  67.04159
-
-``` r
-#boxplot(bl, ot)
-```
 
 Yes it is :( Now view data distributions on a plot
 

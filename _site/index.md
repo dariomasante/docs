@@ -3,4 +3,5 @@ Webdocs
 
 List of pages:
 
--   [Belgium area recipitation issue](./precip_odd_pattern.html)
+-   [Comparison of blending procedure with python vs old in NCL](./blendComparison.html)
+-   [Belgium area precipitation issue](./precip_odd_pattern.html)

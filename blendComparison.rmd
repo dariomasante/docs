@@ -1,0 +1,105 @@
+---
+title: "New blending procedure"
+output: github_document
+---
+
+**Too long; didn't read (TL;DR): the blending procedure translated to py performs well enough compared to the original NCL one.**
+
+I have tested the last 2 years of monthly updates for different SPI periods. Subtracting the 
+new procedure output with the existing data then looking at deltas. 
+Below they are aggregated, since no relevant difference are found among periods or months.
+
+* delta was made cell by cell, for each month and period
+* I did not make statistical tests (i guess a bunch of t-tests could provide that, but trivial i think), nor I dwelt into any month by month analysis (knowing that any is at least 96% equal to the second decimal sufficed).
+* the differences are at the boundary between the search radius around stations and gpcc raw data.  I can't have a clue about that since could not get to the source code of a key function in ncl. Nor I want that, no reason to believe that the python version is more wrong than the previous. It's time consuming and trivial at this level of accuracy. 
+
+```{r summary, echo=FALSE, warning=FALSE}
+library(raster)
+load('D:/EDOGDO/blend2py/compare.RData')
+b <- raster::brick('D:/EDOGDO/blend2py/compare.gri')
+s <- calc(b, sum) # kind of local "bias" 
+dev <- calc(b, sd); #plot(dev, main='st.dev.', col=heat.colors(100, rev=TRUE))
+mn <- calc(b, mean); #plot(m, main='mean', col=heat.colors(100, rev=TRUE))
+for(p in 1:3){
+  print(c("within +/- 0.5","within +/- 0.1","within +/- 0.01")[p])
+  print(summary(lst[[p]]));
+}
+boxplot(lst, main='proportion of deltas', names=c("within +/- 0.5","within +/- 0.1","within +/- 0.01"))
+```
+
+The summary shows that the vast majority of values (about 97%) falls within plus minus 0.01 compared to old NCL version). I did not investigate the outlier dates that seem to perform worse, I think they are negligible anyway.
+
+### What about extreme SPI values?
+*The new procedure smoothes slightly more the extremes*
+Below I removed all SPI between +/- 1 and fitted a linear model of original vs new data for the worst performing date tested (2019-05-01). The model ideally should return y = x.
+The actual model correctly has both intercept close to zero and slope close to 1.
+
+```{r} 
+print(m); 
+par(mfrow=c(2,2))
+plot(m)
+```
+
+Residuals show some pattern (upper left), but for a small num of records overall.
+qq plot shows heavy tails (upper right): the more extreme, the more departure from zero difference.
+Data seems slightly heteroskedastic (lower left), but just because of not many values at extremes and a slight non linearity is detected
+Basically no outliers are detected (lower right), nor any influences the model (i.e. the previous is reliable)
+
+Modelling the differences (not shown) shows very small slope, not equal to zero as it should, but negligible given the limited range of values.
+```{r} 
+summary(lm(md ~ mfr))
+```
+
+### map of deltas
+The map shows standard deviation and average of all deltas, aggregated regardless periods and months. 
+You can see that at the boundary of the search radius of the blending algorithms there are the wider differences. It is difficult to track back the source of difference, because I cannot find the original code for a key function.
+
+```{r map, echo=FALSE, warning=FALSE}
+library(leaflet)
+crs(dev) <- sp::CRS("+init=epsg:4326")
+crs(mn) <- sp::CRS("+init=epsg:4326")
+pal <- colorNumeric('Reds', values(dev), na.color = "transparent")
+palm <- colorNumeric('RdYlBu', values(mn), na.color = "transparent")
+leaflet() %>%
+  addTiles %>% # Add default OpenStreetMap map tiles
+  setView(lng = 5.0, lat = 51.0, zoom = 2) %>% 
+  addRasterImage(dev, colors = pal, opacity = 0.8, group='st.dev. of differences') %>% 
+  addRasterImage(mn, colors = palm, opacity = 0.8, group='mean difference') %>% 
+  addLegend(pal=pal, values = values(dev)) %>% 
+  addLegend(pal=palm, values = values(mn)) %>% 
+  addLayersControl(
+    overlayGroups = c("mean difference", "st.dev. of differences"),
+    options = layersControlOptions(collapsed = FALSE)
+  )
+```
+
+## summary month by month
+Number of cells with values of difference beyond +/- 1. Summary and boxplot below refer to the full sample of 120 months/SPI combos
+
+```{r extremes, echo=FALSE}
+a = sapply(1:120, function(x){
+  dd <- getValues(b[[x]])
+  sum(dd <= -1 | dd >= 1, na.rm=TRUE)
+})
+summary(a)
+boxplot(a, main='Num. of cells beyond +/- 1')
+```
+
+Below follows month by month analysis with proportion of cells within 3 tolerance levels (ignore missing values), number of cells beyond +/- 1 and the summary of all cells for a month
+
+```{r months, echo=FALSE}
+for(x in 1:120){
+  dd <- getValues(b[[x]])
+  t1 <- sum(dd > -0.5 & dd < 0.5, na.rm = TRUE) / (length(dd) - sum(is.na(dd)))
+  t2 <- sum(dd > -0.1 & dd < 0.1, na.rm = TRUE) / (length(dd) - sum(is.na(dd)))
+  t3 <- sum(dd > -0.01 & dd < 0.01, na.rm = TRUE) / (length(dd) - sum(is.na(dd)))
+  n <- unlist(strsplit(gsub('X','',names(b[[x]])), '\\.'))
+  print(paste('Month:', n[1], n[2], ' -- SPI', n[3]))
+  print(paste('difference within +/- 0.5', round(t1,3) ))
+  print(paste('difference within +/- 0.1', round(t2,3) ) )
+  print(paste('difference within +/- 0.01', round(t3,3) ) )
+  print(paste('Num. of cells with difference beyond +/- 1 -> ', sum(dd <= -1 | dd >= 1, na.rm=TRUE), 'out of ', sum(!is.na(dd))))
+  print(summary(dd))
+  print('------------')
+}
+```

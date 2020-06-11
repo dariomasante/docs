@@ -1,7 +1,5 @@
 ---
 title: "How precipitation"
-author: "dario masante"
-date: "11 June 2020"
 output: github_document
 ---
 
@@ -29,7 +27,6 @@ Quite different averages... Is it statistically significant? (I know distributio
 
 ```{r}
 t.test(bl, ot)
-#boxplot(bl, ot)
 ```
 
 Yes it is :( Now view data distributions on a plot

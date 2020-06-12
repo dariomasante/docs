@@ -1,7 +1,9 @@
 New blending procedure
 ================
 
-**Too long; didn't read (TL;DR): the blending procedure translated to py performs well enough compared to the original NCL one.**
+**Too long; didn't read (TL;DR): the blending procedure translated to py performs well enough compared to the original NCL one.** Recalculate of past data is not necessary for these reasons: \* the values are extremely close to the former version, thus trivial to do \* the methodology has not changed \* the purpose of this indicator in gdo is monitoring and is meaningful on its own, it's not made for comparison across time (but rather across space, if anything). But again, differences are tiny. \* The blending it's not affecting the underlying data, it's
+
+There are also good reasons to recalculate: \* make things technically consistent and exatcly reproducible, it is "more correct" \* Launching recalculation it probably takes less time than writing these pros and cons!
 
 I have tested the last 2 years of monthly updates for different SPI periods. Subtracting the new procedure output with the existing data then looking at deltas. Below they are aggregated, since no relevant difference are found among periods or months.
 
@@ -67,7 +69,7 @@ Modelling the differences (not shown) shows very small slope, not equal to zero 
 
 ### map of deltas
 
-The map shows standard deviation and average of all deltas, aggregated regardless periods and months. You can see that at the boundary of the search radius of the blending algorithms there are the wider differences. It is difficult to track back the source of difference, because I cannot find the original code for a key function. FOR INTERACTIVE VERSION SEE EMAIL
+The map shows standard deviation and average of all deltas, aggregated regardless periods and months. You can see that at the boundary of the search radius of the blending algorithms there are the wider differences. It is difficult to track back the source of difference, because I cannot find the original code for a key function.
 
 ![](blendComparison_files/figure-markdown_github/map-1.png)
 

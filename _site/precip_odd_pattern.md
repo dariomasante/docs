@@ -1,6 +1,8 @@
 How precipitation
 ================
 
+**TL;DR: Could possibly the baseline be built using other precipitation data from what we're using to calculate SPI? Can we trace back data on db to their source, in order to check the problem is from these sources?**
+
 The following picture of SPI 48, filtering out a lot of short and mid-term variability, captured my attention. It is quite suspect that the SPI is floating around normal as expected within the baseline, while out of it it gets to crazy negative values... So crazy it's hard to believe they repeat at only 50 years distance (70ies and 20ies) ![](D:/spi48.PNG)
 
 So let's check if overall monthly **precipitation** averages are roughly the same between baseline (bl) period and outside (ot). I'd expect not to be very different.

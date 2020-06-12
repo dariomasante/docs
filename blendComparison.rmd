@@ -27,32 +27,30 @@ for(p in 1:3){
 boxplot(lst, main='proportion of deltas', names=c("within +/- 0.5","within +/- 0.1","within +/- 0.01"))
 ```
 
-The summary shows that the vast majority of values (about 97%) falls within plus minus 0.01 compared to old NCL version). I did not investigate the outlier dates that seem to perform worse, I think they are negligible anyway.
+The summary shows that the vast majority of values (about 97%) falls within plus minus 0.01 compared to old NCL version). I did investigate the outlier date that seem to perform worse, see below.
 
 ### What about extreme SPI values?
 *The new procedure smoothes slightly more the extremes*
 Below I removed all SPI between +/- 1 and fitted a linear model of original vs new data for the worst performing date tested (2019-05-01). The model ideally should return y = x.
-The actual model correctly has both intercept close to zero and slope close to 1.
+The actual model correctly has intercept close to zero and slope close to 1:
 
-```{r} 
+```{r, echo=FALSE} 
 print(m); 
 par(mfrow=c(2,2))
 plot(m)
 ```
 
 Residuals show some pattern (upper left), but for a small num of records overall.
-qq plot shows heavy tails (upper right): the more extreme, the more departure from zero difference.
-Data seems slightly heteroskedastic (lower left), but just because of not many values at extremes and a slight non linearity is detected
-Basically no outliers are detected (lower right), nor any influences the model (i.e. the previous is reliable)
+qq plot shows heavy tails (upper right): the more extreme, the more departure from zero difference. However these values are more and more rare departing from zero, by definition. Also in a classified map they won't show such differences. Data seems slightly heteroskedastic (lower left), but just because of not many values at extremes and a slight non linearity is detected. Basically no outliers are detected (lower right), nor any influences the model (i.e. the previous are reliable).
 
-Modelling the differences (not shown) shows very small slope, not equal to zero as it should, but negligible given the limited range of values.
-```{r} 
+Modelling the differences (not shown) shows very small slope, not equal to zero as it should but close, and negligible given the limited range of values SPI take. also intercept is very close to zero, as it should.
+```{r, echo=FALSE} 
 summary(lm(md ~ mfr))
 ```
 
 ### map of deltas
 The map shows standard deviation and average of all deltas, aggregated regardless periods and months. 
-You can see that at the boundary of the search radius of the blending algorithms there are the wider differences. It is difficult to track back the source of difference, because I cannot find the original code for a key function.
+You can see that at the boundary of the search radius of the blending algorithms there are the wider differences. It is difficult to track back the source of difference, because I cannot find the original code for a key function. FOR INTERACTIVE VERSION SEE EMAIL
 
 ```{r map, echo=FALSE, warning=FALSE}
 library(leaflet)
@@ -74,7 +72,7 @@ leaflet() %>%
 ```
 
 ## summary month by month
-Number of cells with values of difference beyond +/- 1. Summary and boxplot below refer to the full sample of 120 months/SPI combos
+Number of cells with values of **difference** (not SPI value) beyond +/- 1. Summary and boxplot below refer to the full sample of 120 months/SPI combos
 
 ```{r extremes, echo=FALSE}
 a = sapply(1:120, function(x){

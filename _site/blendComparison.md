@@ -25,15 +25,11 @@ I have tested the last 2 years of monthly updates for different SPI periods. Sub
 
 ![](blendComparison_files/figure-markdown_github/summary-1.png)
 
-The summary shows that the vast majority of values (about 97%) falls within plus minus 0.01 compared to old NCL version). I did not investigate the outlier dates that seem to perform worse, I think they are negligible anyway.
+The summary shows that the vast majority of values (about 97%) falls within plus minus 0.01 compared to old NCL version). I did investigate the outlier date that seem to perform worse, see below.
 
 ### What about extreme SPI values?
 
-*The new procedure smoothes slightly more the extremes* Below I removed all SPI between +/- 1 and fitted a linear model of original vs new data for the worst performing date tested (2019-05-01). The model ideally should return y = x. The actual model correctly has both intercept close to zero and slope close to 1.
-
-``` r
-print(m); 
-```
+*The new procedure smoothes slightly more the extremes* Below I removed all SPI between +/- 1 and fitted a linear model of original vs new data for the worst performing date tested (2019-05-01). The model ideally should return y = x. The actual model correctly has intercept close to zero and slope close to 1:
 
     ## 
     ## Call:
@@ -43,20 +39,11 @@ print(m);
     ##   (Intercept)  getValues(fr)  
     ##     -0.001757       0.997809
 
-``` r
-par(mfrow=c(2,2))
-plot(m)
-```
-
 ![](blendComparison_files/figure-markdown_github/unnamed-chunk-1-1.png)
 
-Residuals show some pattern (upper left), but for a small num of records overall. qq plot shows heavy tails (upper right): the more extreme, the more departure from zero difference. Data seems slightly heteroskedastic (lower left), but just because of not many values at extremes and a slight non linearity is detected Basically no outliers are detected (lower right), nor any influences the model (i.e. the previous is reliable)
+Residuals show some pattern (upper left), but for a small num of records overall. qq plot shows heavy tails (upper right): the more extreme, the more departure from zero difference. However these values are more and more rare departing from zero, by definition. Also in a classified map they won't show such differences. Data seems slightly heteroskedastic (lower left), but just because of not many values at extremes and a slight non linearity is detected. Basically no outliers are detected (lower right), nor any influences the model (i.e. the previous are reliable).
 
-Modelling the differences (not shown) shows very small slope, not equal to zero as it should, but negligible given the limited range of values.
-
-``` r
-summary(lm(md ~ mfr))
-```
+Modelling the differences (not shown) shows very small slope, not equal to zero as it should but close, and negligible given the limited range of values SPI take. also intercept is very close to zero, as it should.
 
     ## 
     ## Call:
@@ -80,14 +67,14 @@ summary(lm(md ~ mfr))
 
 ### map of deltas
 
-The map shows standard deviation and average of all deltas, aggregated regardless periods and months. You can see that at the boundary of the search radius of the blending algorithms there are the wider differences. It is difficult to track back the source of difference, because I cannot find the original code for a key function.
+The map shows standard deviation and average of all deltas, aggregated regardless periods and months. You can see that at the boundary of the search radius of the blending algorithms there are the wider differences. It is difficult to track back the source of difference, because I cannot find the original code for a key function. FOR INTERACTIVE VERSION SEE EMAIL
 
 ![](blendComparison_files/figure-markdown_github/map-1.png)
 
 summary month by month
 ----------------------
 
-Number of cells with values of difference beyond +/- 1. Summary and boxplot below refer to the full sample of 120 months/SPI combos
+Number of cells with values of **difference** (not SPI value) beyond +/- 1. Summary and boxplot below refer to the full sample of 120 months/SPI combos
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
     ##   0.000   2.000   4.000   5.642   8.250  20.000

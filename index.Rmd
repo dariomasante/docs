@@ -6,4 +6,5 @@ output: github_document
 List of pages:
 
 * [Comparison of blending procedure with python vs old in NCL](./blendComparison.html)
-* [Belgium area precipitation issue](./precip_odd_pattern.html)
+* [Eastern Belgium precipitation issue](./precip_odd_pattern.html)
+* [Sorting GPCC data (follow up on)](./gpcc_sorted.html)

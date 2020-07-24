@@ -3,16 +3,19 @@ title: "New blending procedure"
 output: github_document
 ---
 
-**Too long; didn't read (TL;DR): the blending procedure translated to py performs well enough compared to the original NCL one.**
+**TL;DR: the blending procedure translated to py performs well enough compared to the original NCL one.**
+
 Recalculate of past data is not necessary for these reasons:
+
 * the values are extremely close to the former version, thus trivial to do
 * the methodology has not changed
 * the purpose of this indicator in gdo is monitoring and is meaningful on its own, it's not made for comparison across time (but rather across space, if anything). But again, differences are tiny.
 * The blending it's not affecting the underlying data, it's 
 
 There are also good reasons to recalculate: 
+
 * make things technically consistent and exatcly reproducible, it is "more correct"
-* Launching recalculation it probably takes less time than writing these pros and cons!
+* Launching recalculation probably takes less time than writing this list of pros and cons!
 
 I have tested the last 2 years of monthly updates for different SPI periods. Subtracting the 
 new procedure output with the existing data then looking at deltas. 
@@ -36,10 +39,12 @@ for(p in 1:3){
 boxplot(lst, main='proportion of deltas', names=c("within +/- 0.5","within +/- 0.1","within +/- 0.01"))
 ```
 
-The summary shows that the vast majority of values (about 97%) falls within plus minus 0.01 compared to old NCL version). I did investigate the outlier date that seem to perform worse, see below.
+The summary shows that the vast majority of values (about 97%) falls within plus minus 0.01 compared to old NCL version). 
+
+I did investigate the outlier date that seem to perform worse, see below.
 
 ### What about extreme SPI values?
-*The new procedure smoothes slightly more the extremes*
+**The new procedure smoothes slightly more the extremes**
 Below I removed all SPI between +/- 1 and fitted a linear model of original vs new data for the worst performing date tested (2019-05-01). The model ideally should return y = x.
 The actual model correctly has intercept close to zero and slope close to 1:
 

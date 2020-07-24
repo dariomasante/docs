@@ -1,0 +1,6 @@
+---
+title: "gpcc sorted"
+output: github_document
+---
+
+**Could possibly the baseline have been built using other precipitation data from what we're using to calculate SPI? Answer: yes, in fact current monitoring v6 precipitation is a bit biased compared to the baseline. However, all precipitation data between 1971-2007 corresponds to reanalysis v6 as well as the baseline 1981-2010. In general there are no problems in our data, apart from being a bit mixed up. So the strong anomalies in the seventies are real (or due to issues in gpcc reanalysis data), while in the '10ies cannot be compared, but *might* be biased towards lower levels, as found in the overlapping interval 1982-2010.**
